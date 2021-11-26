@@ -175,6 +175,7 @@
 
     let rankList = await getHotVideo()
     await drawFirst(rankList.shift())
+    console.log(`[rankList[0]:`, rankList[0])
     rankList.forEach((item, index) => {
       let title = item.name.replace(/<em class="keyword">(.*?)<\/em>/g, '$1')
       let DOM = s2d(`
@@ -199,7 +200,9 @@
           </div>
           <div class="count">
             <ul>
-              <li><i class="bilifont bili-icon_shipin_bofangshu"></i><span>-</span></li>
+              <li><i class="bilifont bili-icon_shipin_bofangshu"></i><span>${
+                item.view_count
+              }</span></li>
               <li><i class="bilifont bili-icon_shipin_danmushu"></i><span>-</span></li>
               <li><i class="bilifont bili-icon_shipin_shoucangshu"></i><span>-</span></li>
               <li><i class="bilifont bili-icon_shipin_yingbishu"></i><span>-</span></li>
