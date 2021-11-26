@@ -4,6 +4,9 @@
     #bili_zhoushuyi .popover-video-card {
       display: none;
     }
+    #bili_zhoushuyi a:hover+.popover-video-card {
+      display: block;
+    }
   `)
   const TITLE = '周姐'
   const KEY_WORDS = '周淑怡'
@@ -51,6 +54,23 @@
     drawVideos()
   }
 
+  function timeFormat(time) {
+    let res = []
+    let [s = 0, m = 0] = time.split(':').reverse()
+
+    res.unshift(String(s).padStart(2, '0'))
+    res.unshift(String(m % 60).padStart(2, '0'))
+    let h = Math.floor(m / 60)
+    if (h) {
+      res.unshift(String(h % 60).padStart(2, '0'))
+    }
+    return res.join(':')
+  }
+  
+  function dateFormat(ts) {
+    let time = new Date(ts*1000)
+    return `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()}`
+  }
   function drawVideos() {
     const VIDEO_DOM = document.querySelector('#bili_zhoushuyi .zone-list-box')
     VIDEO_DOM.innerHTML = ''
@@ -66,7 +86,7 @@
               <div class="left"><span><i class="bilifont bili-icon_shipin_bofangshu"></i>
                   ${item.play}
                 </span><span><i class="bilifont bili-icon_shipin_dianzanshu"></i>${item.favorites}</span></div>
-              <div class="right"><span>${item.duration}</span></div>
+              <div class="right"><span>${timeFormat(item.duration)}</span></div>
             </div><i class="crown"></i>
           </a>
           <div class="watch-later-video van-watchlater black"><span class="wl-tips" style="display: none;"></span>
@@ -116,8 +136,6 @@
       content.insertBefore(blocker, anchor)
 
       document.querySelector('.zhoujie-refresh').addEventListener('click', refresh)
-      document.querySelector('#bili_zhoushuyi .rank-wrap').addEventListener('hover', refresh)
-      document.querySelector('#bili_zhoushuyi .rank-wrap').addEventListener('hover', refresh)
       
       const RANK_DOM = document.querySelector('#bili_zhoushuyi .rank-list')
       
@@ -186,9 +204,17 @@
                 <p class="subtitle"><span class="name">${
                   item.author
                 }</span><span class="point">·</span><span
-                    class="time">${item.senddate}</span></p>
+                    class="time">${dateFormat(item.senddate)}</span></p>
               </div>
             </div>
+            <div class="count">
+              <ul>
+                <li><i class="bilifont bili-icon_shipin_bofangshu"></i><span>-</span></li>
+                <li><i class="bilifont bili-icon_shipin_danmushu"></i><span>-</span></li>
+                <li><i class="bilifont bili-icon_shipin_shoucangshu"></i><span>-</span></li>
+                <li><i class="bilifont bili-icon_shipin_yingbishu"></i><span>-</span></li>
+              </ul>
+            </div>  
           </div>
         </div>`)
         RANK_DOM.append(DOM)
