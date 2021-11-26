@@ -33,9 +33,9 @@
 
   async function getHotVideo() {
     let res = await fetch(
-      `https://api.bilibili.com/x/web-interface/search/type?context=&page=1&order=totalrank&keyword=${KEY_WORDS}&search_type=video`,
+      `https://api.bilibili.com/x/web-interface/web/channel/multiple/list?channel_id=780447&sort_type=hot&offset=&page_size=8`,
     )
-    return (await res.json()).data.result
+    return (await res.json()).data.list[0].items
   }
 
   function bigNumber(num) {
@@ -146,9 +146,8 @@
     
       // 插入热门视频
       let rankList = await getHotVideo()
-
       let firstDetail = await getDetail(rankList[0].bvid)
-      let firstTitle = rankList[0].title.replace(
+      let firstTitle = rankList[0].name.replace(
         /<em class="keyword">(.*?)<\/em>/g,
         '$1',
       )
@@ -157,7 +156,7 @@
         <div class="preview">
           <div class="pic">
             <a href="//www.bilibili.com/video/${rankList[0].bvid}" target="_blank" class="link">
-              <img src="${rankList[0].pic}" alt="${firstTitle}">
+              <img src="${rankList[0].cover}" alt="${firstTitle}">
             </a>
             <div class="watch-later-video van-watchlater black"><span class="wl-tips" style="display: none;"></span>
             </div>
@@ -166,13 +165,13 @@
             rankList[0].bvid
           }" target="_blank" class="link">
               <p title="${firstTitle}">${firstTitle}</p>
-            </a><span>播放次数：${bigNumber(firstDetail.view)}</span></div>
+            </a><span>播放次数：${firstDetail.view_count}</span></div>
         </div>
         <div class="popover-video-card pvc" style="display: none;">
-          <div class="content"><img src="${rankList[0].pic}" alt="">
+          <div class="content"><img src="${rankList[0].cover}" alt="">
             <div class="info">
               <p class="f-title">${firstTitle}</p>
-              <p class="subtitle"><span class="name">${ rankList[0].author }</span>
+              <p class="subtitle"><span class="name">${rankList[0].author_name }</span>
                 <span class="point">·</span><span class="time">2021-11-22</span></p>
             </div>
           </div>
@@ -189,22 +188,22 @@
       `
       RANK_DOM.append(s2d(first))
 
-      rankList.slice(1, 8).forEach((item, index) => {
-        let title = item.title.replace(/<em class="keyword">(.*?)<\/em>/g, '$1')
+      rankList.slice(1, 10).forEach((item, index) => {
+        let title = item.name.replace(/<em class="keyword">(.*?)<\/em>/g, '$1')
         let DOM = s2d(`
-        <div class="rank-wrap"><span class="number ${index < 2 && 'on'}">${index + 1}</span>
+        <div class="rank-wrap"><span class="number ${index < 2 && 'on'}">${index + 2}</span>
           <a href="//www.bilibili.com/video/${item.bvid}" target="_blank" class="link">
             <p title="${title}" class="title">${title}</p>
           </a>
           <div class="popover-video-card pvc">
             <div class="content"><img
-                src="${item.pic}" alt="">
+                src="${item.cover}" alt="">
               <div class="info">
                 <p class="f-title">${title}</p>
                 <p class="subtitle"><span class="name">${
-                  item.author
+                  item.author_name
                 }</span><span class="point">·</span><span
-                    class="time">${dateFormat(item.senddate)}</span></p>
+                    class="time">${timeFormat(item.duration)}</span></p>
               </div>
             </div>
             <div class="count">
